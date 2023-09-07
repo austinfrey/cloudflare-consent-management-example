@@ -16,7 +16,6 @@ const ZarazProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const purposes = mockZaraz.consent.getAll();
-    debugger;
     Object.keys(purposes).filter((key: any) => {
       !purposes[key] && setShowModal(true);
     });
