@@ -15,13 +15,15 @@ const ZarazProvider = ({ children }: Props) => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    console.log("ZARAZ", mockZaraz);
-    setShowModal(!mockZaraz.consent.get("test-purpose"));
-
-    document.addEventListener("zarazConsentAPIReady", () => {
+    const handleEvent = () => {
       console.log("Zaraz Content API ready");
       setContentApiReady(true);
-    });
+    };
+    console.log("adding zarazConsentAPIReady event listener");
+    document.addEventListener("zarazConsentAPIReady", handleEvent);
+
+    return () =>
+      document.removeEventListener("zarazConsentAPIReady", handleEvent);
   }, [showModal, contentApiReady]);
 
   const Modal = () => {
