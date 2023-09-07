@@ -43,7 +43,8 @@ const ZarazProvider = ({ children }: Props) => {
         <button
           className="approve-button"
           onClick={() => {
-            mockZaraz.consent.set({ "test-purpose": true });
+            const purposeId = Object.keys(mockZaraz.consent.getAll())[0];
+            mockZaraz.consent.set({ [purposeId]: true });
             setShowModal(false);
           }}
         >
