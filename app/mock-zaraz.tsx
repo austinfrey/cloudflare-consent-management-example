@@ -1,4 +1,4 @@
-type Purpose = {
+export type Purpose = {
   [key: string]: boolean;
 };
 

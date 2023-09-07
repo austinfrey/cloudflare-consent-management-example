@@ -15,6 +15,11 @@ const ZarazProvider = ({ children }: Props) => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    const purposes = mockZaraz.consent.getAll();
+    debugger;
+    Object.keys(purposes).filter((key: any) => {
+      !purposes[key] && setShowModal(true);
+    });
     const handleEvent = () => {
       console.log("Zaraz Content API ready");
       setContentApiReady(true);
