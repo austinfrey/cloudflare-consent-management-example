@@ -15,6 +15,7 @@ const ZarazProvider = ({ children }: Props) => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    console.log("ZARAZ", mockZaraz);
     setShowModal(!mockZaraz.consent.get("test-purpose"));
 
     document.addEventListener("zarazConsentAPIReady", () => {
