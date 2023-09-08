@@ -34,11 +34,16 @@ function MockZaraz(initialPurposes: Purpose[] = []) {
     console.log("MOCK setAll", consentStatus, PURPOSES);
   }
 
+  function sendQueueEvents() {
+    console.log("MOCK sendQueuedEvents");
+  }
+
   const consent = {
     get,
     set,
     getAll,
     setAll,
+    sendQueueEvents,
   };
 
   return {
