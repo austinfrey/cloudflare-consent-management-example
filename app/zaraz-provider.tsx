@@ -56,7 +56,7 @@ const ZarazProvider = ({ children }: Props) => {
             type="checkbox"
             id="marketingCheckbox"
             name="marketingCheckbox"
-            value={purposes[1]}
+            value={purposes[1][0]}
           />
         </div>
         <div>
@@ -68,7 +68,7 @@ const ZarazProvider = ({ children }: Props) => {
             type="checkbox"
             id="trackingCheckbox"
             name="trackingCheckbox"
-            value={purposes[2]}
+            value={purposes[2][0]}
           />
         </div>
 
