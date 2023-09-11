@@ -2,6 +2,8 @@ export type Purpose = {
   [key: string]: boolean | undefined;
 };
 
+const document = { cookie: "" };
+
 function MockZaraz() {
   const PURPOSES: { [key: string]: boolean | undefined } = {
     "test-purpose": false,
