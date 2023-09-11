@@ -9,7 +9,9 @@ function MockZaraz() {
   const createCookieString = (consentPreferences: any) =>
     `cf_consent=${JSON.stringify(consentPreferences)}`;
 
-  document.cookie = createCookieString({ testPurpose: false });
+  if (document) {
+    document.cookie = createCookieString({ testPurpose: false });
+  }
 
   const getParsedCookieString = () =>
     document.cookie && JSON.parse(document.cookie.split("=")[1]);
