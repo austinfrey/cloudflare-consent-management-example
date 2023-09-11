@@ -14,13 +14,15 @@ const ZarazProvider = ({ children }: Props) => {
   const [purposes, setPurposes] = useState<any[]>([]);
 
   useEffect(() => {
-    const purposes = mockZaraz.consent.getAll();
-    setPurposes(Object.keys(purposes).map((key) => ({ [key]: purposes[key] })));
+    const purposes: any = Object.keys(mockZaraz.consent.getAll()).map((key) => [
+      key,
+      mockZaraz.consent.getAll()[key],
+    ]);
 
-    // if any purposes still false, show modal
-    Object.keys(purposes).map((key: any) => {
-      !purposes[key] && setShowModal(true);
-    });
+    setPurposes(purposes);
+
+    // if essential cookie not set
+    !purposes[0][1] && setShowModal(true);
   }, [showModal]);
 
   console.log("purposes", purposes);
@@ -39,40 +41,46 @@ const ZarazProvider = ({ children }: Props) => {
           <input
             onClick={(e: React.MouseEvent<HTMLInputElement>) => {
               if (e.currentTarget.checked) {
+                purposes[1][1] = true;
+              } else {
+                purposes[1][1] = false;
               }
-              console.log(e.currentTarget.value);
+              setPurposes(purposes);
             }}
             type="checkbox"
             id="marketingCheckbox"
             name="marketingCheckbox"
-            value={JSON.stringify(purposes[1])}
           />
         </div>
         <div>
           <label htmlFor="allowTracking">Opt into usage tracking cookies</label>
           <input
-            onClick={(e: React.MouseEvent<HTMLInputElement>) =>
-              console.log(e.currentTarget.value)
-            }
+            onClick={(e: React.MouseEvent<HTMLInputElement>) => {
+              if (e.currentTarget.checked) {
+                purposes[2][1] = true;
+              } else {
+                purposes[2][1] = false;
+              }
+              setPurposes(purposes);
+            }}
             type="checkbox"
             id="trackingCheckbox"
             name="trackingCheckbox"
-            value={JSON.stringify(purposes[2])}
           />
         </div>
 
         <button
-          className="approve-button"
+          className="decision-button"
           onClick={() => {
-            const purposeId = Object.keys(mockZaraz.consent.getAll())[0];
-            mockZaraz.consent.set({ [purposeId]: true });
+            purposes[0][1] = true;
+            purposes.forEach((p) => mockZaraz.consent.set({ [p[0]]: p[1] }));
             setShowModal(false);
           }}
         >
           Submit
         </button>
         <button
-          className="approve-button"
+          className="decision-button"
           onClick={() => {
             mockZaraz.consent.setAll(true);
             setShowModal(false);
@@ -81,10 +89,10 @@ const ZarazProvider = ({ children }: Props) => {
           Accept All
         </button>
         <button
-          className="approve-button"
+          className="decision-button"
           onClick={() => {
             mockZaraz.consent.setAll(false);
-            setShowModal(false);
+            setShowModal(true);
           }}
         >
           Reject All

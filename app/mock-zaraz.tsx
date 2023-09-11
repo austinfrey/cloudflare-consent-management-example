@@ -12,7 +12,11 @@ function MockZaraz() {
     `cf_consent=${JSON.stringify(consentPreferences)}`;
 
   if (document) {
-    document.cookie = createCookieString({ testPurpose: false });
+    document.cookie = createCookieString({
+      essentialCookie: false,
+      marketingCookie: false,
+      trackingCookie: false,
+    });
   }
 
   const getParsedCookieString = () =>
@@ -20,7 +24,6 @@ function MockZaraz() {
 
   function get(purposeId: string): boolean | undefined {
     const cookie = getParsedCookieString();
-    console.log("MOCK get", purposeId, cookie[purposeId]);
     return cookie[purposeId];
   }
 
@@ -30,28 +33,24 @@ function MockZaraz() {
 
     cookie[purposeId] = consentPreferences[purposeId];
     document.cookie = createCookieString(cookie);
-
-    console.log("MOCK set", document.cookie);
   }
 
   function getAll() {
-    console.log("MOCK getAll", getParsedCookieString());
     return getParsedCookieString();
   }
 
   function setAll(consentStatus: boolean) {
     const cookie = getParsedCookieString();
     const purposeIds = Object.keys(cookie);
+
     purposeIds.map((id) => {
       cookie[id] = consentStatus;
     });
+
     document.cookie = cookie;
-    console.log("MOCK setAll", consentStatus, cookie);
   }
 
-  function sendQueueEvents() {
-    console.log("MOCK sendQueuedEvents");
-  }
+  function sendQueueEvents() {}
 
   const consent = {
     get,
