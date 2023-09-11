@@ -7,11 +7,9 @@ type Props = {
   children: ReactNode;
 };
 
-const mockZaraz =
-  typeof zaraz === "undefined" ? MockZaraz([{ "test-purpose": false }]) : zaraz;
+const mockZaraz = typeof zaraz === "undefined" ? MockZaraz() : zaraz;
 
 const ZarazProvider = ({ children }: Props) => {
-  const [contentApiReady, setContentApiReady] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [purposes, setPurposes] = useState<any[]>([]);
 
@@ -20,21 +18,10 @@ const ZarazProvider = ({ children }: Props) => {
     setPurposes(Object.keys(purposes).map((key) => ({ [key]: purposes[key] })));
 
     // if any purposes still false, show modal
-    Object.keys(purposes).filter((key: any) => {
+    Object.keys(purposes).map((key: any) => {
       !purposes[key] && setShowModal(true);
     });
-
-    const handleEvent = () => {
-      console.log("Zaraz Content API ready");
-      setContentApiReady(true);
-    };
-
-    console.log("adding zarazConsentAPIReady event listener");
-    document.addEventListener("zarazConsentAPIReady", handleEvent);
-
-    return () =>
-      document.removeEventListener("zarazConsentAPIReady", handleEvent);
-  }, [showModal, contentApiReady]);
+  }, [showModal]);
 
   console.log("purposes", purposes);
 
@@ -50,9 +37,11 @@ const ZarazProvider = ({ children }: Props) => {
         <div>
           <label htmlFor="allowMarketing">Opt into Marketing cookies</label>
           <input
-            onClick={(e: React.MouseEvent<HTMLInputElement>) =>
-              console.log(e.currentTarget.value)
-            }
+            onClick={(e: React.MouseEvent<HTMLInputElement>) => {
+              if (e.currentTarget.checked) {
+              }
+              console.log(e.currentTarget.value);
+            }}
             type="checkbox"
             id="marketingCheckbox"
             name="marketingCheckbox"
@@ -82,11 +71,29 @@ const ZarazProvider = ({ children }: Props) => {
         >
           Submit
         </button>
+        <button
+          className="approve-button"
+          onClick={() => {
+            mockZaraz.consent.setAll(true);
+            setShowModal(false);
+          }}
+        >
+          Accept All
+        </button>
+        <button
+          className="approve-button"
+          onClick={() => {
+            mockZaraz.consent.setAll(false);
+            setShowModal(false);
+          }}
+        >
+          Reject All
+        </button>
       </div>
     );
   };
 
-  return showModal && contentApiReady ? <Modal></Modal> : <>{children}</>;
+  return showModal ? <Modal></Modal> : <>{children}</>;
 };
 
 export default ZarazProvider;

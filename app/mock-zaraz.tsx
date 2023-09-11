@@ -1,37 +1,48 @@
 export type Purpose = {
-  [key: string]: boolean;
+  [key: string]: boolean | undefined;
 };
 
-function MockZaraz(initialPurposes: Purpose[] = []) {
-  const PURPOSES: { [key: string]: boolean } = {};
+function MockZaraz() {
+  const PURPOSES: { [key: string]: boolean | undefined } = {
+    "test-purpose": false,
+  };
+  const createCookieString = (consentPreferences: any) =>
+    `cf_consent=${JSON.stringify(consentPreferences)}`;
 
-  initialPurposes.map((p) => {
-    const purposeId = Object.keys(p)[0];
-    PURPOSES[purposeId] = p[purposeId];
-  });
+  document.cookie = createCookieString({ testPurpose: false });
 
-  function get(purposeId: string): boolean {
-    console.log("MOCK get", purposeId, PURPOSES[purposeId]);
-    return PURPOSES[purposeId];
+  const getParsedCookieString = () =>
+    document.cookie && JSON.parse(document.cookie.split("=")[1]);
+
+  function get(purposeId: string): boolean | undefined {
+    const cookie = getParsedCookieString();
+    console.log("MOCK get", purposeId, cookie[purposeId]);
+    return cookie[purposeId];
   }
 
   function set(consentPreferences: Purpose) {
     const purposeId = Object.keys(consentPreferences)[0];
-    PURPOSES[purposeId] = consentPreferences[purposeId];
-    console.log("MOCK set", consentPreferences);
+    const cookie = getParsedCookieString();
+
+    cookie[purposeId] = consentPreferences[purposeId];
+    document.cookie = createCookieString(cookie);
+
+    console.log("MOCK set", document.cookie);
   }
 
   function getAll() {
-    console.log("MOCK getAll", PURPOSES);
-    return PURPOSES;
+    console.log("MOCK getAll", getParsedCookieString());
+    return getParsedCookieString();
   }
 
   function setAll(consentStatus: boolean) {
-    const purposeIds = Object.keys(PURPOSES);
+    const cookie = getParsedCookieString();
+    const purposeIds = Object.keys(cookie);
     purposeIds.map((id) => {
-      PURPOSES[id] = consentStatus;
+      cookie[id] = consentStatus;
     });
-    console.log("MOCK setAll", consentStatus, PURPOSES);
+    document.cookie = cookie;
+    console.log("MOCK setAll", consentStatus, cookie);
   }
 
   function sendQueueEvents() {
